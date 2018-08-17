@@ -1,7 +1,9 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+
 
 # Create your views here.
 
 def hello_world(request):
-    return HttpResponse('Hello world')
+    name = request.GET.get('name', 'Unknown')
+    message = 'Hello {0}'.format(name)
+    return HttpResponse(message)
