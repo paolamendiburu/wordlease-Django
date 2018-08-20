@@ -8,11 +8,14 @@
 <h1>Wordplease</h1>
 
 {% for post in items %}
+<a href="/post/{{ post.pk }}">
     <div class="post">
         <img src="{{ post.image_url.url }}" alt="{{ post.title }}" title="{{ post.title }}">
         <p>{{ post.title}}</p>
         <p>{{ post.introduction }}</p>
     </div>
+
+    </a>
 {% endfor %}
 </body>
 </html>
