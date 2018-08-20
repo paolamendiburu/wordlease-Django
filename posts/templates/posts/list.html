@@ -1,14 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Wordplease</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block body %}
 <h1>Wordplease</h1>
 
 {% for post in items %}
-<a href="/post/{{ post.pk }}">
+<a href="{% url 'post-detail' post.pk %}">
     <div class="post">
         <img src="{{ post.image_url.url }}" alt="{{ post.title }}" title="{{ post.title }}">
         <p>{{ post.title}}</p>
@@ -17,5 +12,5 @@
 
     </a>
 {% endfor %}
-</body>
-</html>
+
+{% endblock %}

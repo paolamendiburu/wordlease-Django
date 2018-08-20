@@ -25,7 +25,7 @@ def home(request):
 
     return render(request, 'posts/list.html', context)
 
-def ad_detail(request, pk):
+def post_detail(request, pk):
     """
      Muestra el detalle de un posts
      :param request objeto:HttpRequest

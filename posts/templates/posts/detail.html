@@ -1,13 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ post.title }}</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %} {{ post.title }} {% endblock %}
+
+{% block body %}
     <h1>{{ post.title }}</h1>
     <img src="{{ poat.image.url}}" alt="{{ post.title }}" title="{{ post.title }}">
     <p>User: {{ post.owner.first_name }} {{ post.owner.last_name }}</p>
     <div>{{ post.full_text }}<</div>
-</body>
-</html>
+
+{% endblock %}

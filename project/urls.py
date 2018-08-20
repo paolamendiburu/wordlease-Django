@@ -18,10 +18,10 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 
-from posts.views import home,  ad_detail
+from posts.views import home,  post_detail
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('post/<int:pk>', ad_detail),
-    path('', home)
+    path('post/<int:pk>', post_detail, name="post-detail"),
+    path('', home, name="home")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
