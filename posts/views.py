@@ -25,3 +25,21 @@ def home(request):
 
     return render(request, 'posts/list.html', context)
 
+def ad_detail(request, pk):
+    """
+     Muestra el detalle de un posts
+     :param request objeto:HttpRequest
+     :param pk es el identificador de un post
+     :return HttpResponse con respuesta
+     """
+    #recuperar de la base de datos el post que me piden y ver que existe y si no existe devolver un 404
+    try:
+        post = Post.objects.select_related().get(pk=pk)
+    except Post.DoesNotExit:
+        return HttpResponse('No existe el post que buscas')
+
+    #si existe el anuncio creamos el contesto
+    context = {'post':post}
+
+    # devover la respuesta utilizando una plantilla
+    return render(request, 'posts/detail.html', context)
