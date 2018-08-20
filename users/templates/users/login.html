@@ -4,8 +4,10 @@
 
 {% block body %}
 
-{% if error %}
-<div style="color: red">Usuario o contrasena incorrecto</div>
+{% if messages %}
+    {% for message in messages %}
+        <div style="color: red">{{ message}}</div>
+    {% endfor %}
 {% endif %}
     <form method="post">
         {% csrf_token %}
@@ -18,6 +20,6 @@
             <input type="password" name="password">
         </div>
         <button type="submit">Login</button>
-    </form>
+    </form
 
 {% endblock %}

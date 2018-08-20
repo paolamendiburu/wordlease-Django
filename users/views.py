@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.shortcuts import render, redirect
 from django.contrib.auth import login as django_login
@@ -11,7 +12,7 @@ def login(request):
     :param request: objeto Httpresponse
     :return: objeto HttpResponse con el formulario renderizado
     """
-    context = {'error': False}
+
 
     #si la peticion  es Post entonces tenemos que hacer el login
     if request.method == 'POST':
@@ -23,7 +24,7 @@ def login(request):
 
         #comprobamos las credenciales del usuario
         if user is None:
-            context['error'] = True
+            messages.error(request, 'Usuario o contraseña incorrecto')
         else:
             # hacemos login del usuario
             django_login(request, user)
