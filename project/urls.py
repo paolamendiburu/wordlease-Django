@@ -19,9 +19,11 @@ from django.contrib import admin
 from django.urls import path
 
 from posts.views import home,  post_detail
+from users.views import login
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('post/<int:pk>', post_detail, name="post-detail"),
-    path('', home, name="home")
+    path('', home, name="home"),
+    path('login', login, name="users:login")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
