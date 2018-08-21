@@ -18,7 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 
-from posts.views import home,  post_detail
+from posts.views import home, post_detail, create_post
 from users.views import login
 
 urlpatterns = [
@@ -27,4 +27,5 @@ urlpatterns = [
     path('', home, name="home"),
     path('login', login, name="login"),
     path('logout', login, name="logout"),
+    path('post/new', create_post, name="create-post")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -9,8 +9,8 @@ class Post(models.Model):
     introduction = models.TextField()
     full_text = models.TextField()
     image= models.FileField(null=True, blank=True)
-    publication_date = models.DateTimeField()
-    created_on = models.DateTimeField(auto_now_add=True)
+    publication_date = models.DateTimeField(auto_now_add=True)
+
 
 
 def __str__(self):

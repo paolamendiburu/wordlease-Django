@@ -4,6 +4,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login as django_login, logout as django_logout
 
 # Create your views here.
+from users.forms import LoginForm
+
 
 def login(request):
 
@@ -14,23 +16,31 @@ def login(request):
     """
 
 
+
+
     #si la peticion  es Post entonces tenemos que hacer el login
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
 
 
-        user = authenticate(username=username, password=password)
+            user = authenticate(username=username, password=password)
 
-        #comprobamos las credenciales del usuario
-        if user is None:
-            messages.error(request, 'Usuario o contraseña incorrecto')
-        else:
-            # hacemos login del usuario
-            django_login(request, user)
-            return redirect('home')
+            #comprobamos las credenciales del usuario
+            if user is None:
+                messages.error(request, 'Usuario o contraseña incorrecto')
+            else:
+                # hacemos login del usuario
+                django_login(request, user)
+                return redirect('home')
 
-    return render(request, 'users/login.html')
+    else:
+        form = LoginForm()
+
+    context = {'form': form}
+    return render(request, 'users/login.html', context)
 
 
 def logout(request):
