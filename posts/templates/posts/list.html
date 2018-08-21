@@ -2,7 +2,7 @@
 {% block body %}
 <h1>Wordplease</h1>
 
-{% for post in items %}
+{% for post in object_list %}
 <a href="{% url 'post-detail' post.pk %}">
     <div class="post">
         <img src="{{ post.image_url.url }}" alt="{{ post.title }}" title="{{ post.title }}">

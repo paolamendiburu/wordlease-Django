@@ -5,59 +5,68 @@ from django.http import HttpResponse
 
 # Create your views here.
 from django.shortcuts import render
+from django.utils.decorators import method_decorator
+from django.views import View
+from django.views.generic import ListView
 
 from posts.forms import PostForm
 from posts.models import Post
 
+class HomeView(ListView):
 
-def home(request):
-    """
-    Muestra el listado de los ultimos posts
-    :param request objeto:HttpRequest
-    :return HttpResponse con respuesta
-    """
-    # recuperar los posts de la base de datos
+    model = Post
+    template_name = 'posts/list.html'
 
-    posts = Post.objects.all().order_by('-publication_date')
-
-    # creamos contexto para poderselo pasar a la plantilla
-
-    context = {'items': posts}
-
-    # devover la respuesta utilizando una plantilla
-
-    return render(request, 'posts/list.html', context)
-
-def post_detail(request, pk):
-    """
-     Muestra el detalle de un posts
-     :param request objeto:HttpRequest
-     :param pk es el identificador de un post
-     :return HttpResponse con respuesta
-     """
-    #recuperar de la base de datos el post que me piden y ver que existe y si no existe devolver un 404
-    try:
-        post = Post.objects.select_related().get(pk=pk)
-    except Post.DoesNotExit:
-        return HttpResponse('No existe el post que buscas')
-
-    #si existe el anuncio creamos el contesto
-    context = {'post':post}
-
-    # devover la respuesta utilizando una plantilla
-    return render(request, 'posts/detail.html', context)
+    def get_queryset(self):
+        result = super().get_queryset()
+        return result.order_by('-publication_date')
 
 
-@login_required
-def create_post(request):
-    """
-    Muestra el formulario para crear un post y lo procesa
-    :param request: objeto HttpRequest
-    :return: HttpResponse con la respuesta
-    """
 
-    # si la peticion es post, entonces tenemos que crear el post
-    if request.method == 'POST':
+
+class PostDeitalView(View):
+    def get(self, request, pk):
+        """
+         Muestra el detalle de un posts
+         :param request objeto:HttpRequest
+         :param pk es el identificador de un post
+         :return HttpResponse con respuesta
+         """
+        #recuperar de la base de datos el post que me piden y ver que existe y si no existe devolver un 404
+        try:
+            post = Post.objects.select_related().get(pk=pk)
+        except Post.DoesNotExit:
+            return HttpResponse('No existe el post que buscas')
+
+        #si existe el anuncio creamos el contesto
+        context = {'post':post}
+
+        # devover la respuesta utilizando una plantilla
+        return render(request, 'posts/detail.html', context)
+
+
+@method_decorator(login_required, name='dispatch')
+class PostFormView(View):
+
+    def get(self, request):
+        """
+        Presenta el formulario
+        :param request: objeto HttpRequest
+        :return: HttpResponse con la respuesta
+        """
+
+        form = PostForm()
+        context = {'form': form}
+        return render(request, 'posts/form.html', context)
+
+
+    def post(self, request):
+        """
+        Procesa el formulario para crear un post
+        :param request: objeto HttpRequest
+        :return: HttpResponse con la respuesta
+        """
+
         post = Post()
         post.owner = request.user
         form = PostForm(request.POST, request.FILES, instance=post)
@@ -68,8 +77,3 @@ def create_post(request):
             form = PostForm()
             # Devolvemos un mensaje de OK
             messages.success(request, 'Anuncio creado correctamente')
-    else:
-        # si no es post, tenemos que mostrar un formulario vacío
-        form = PostForm()
-    context = {'form': form}
-    return render(request, 'posts/form.html', context)
