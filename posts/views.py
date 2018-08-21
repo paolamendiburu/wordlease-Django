@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 
 
@@ -47,13 +48,14 @@ def post_detail(request, pk):
     return render(request, 'posts/detail.html', context)
 
 
-
+@login_required
 def create_post(request):
     """
     Muestra el formulario para crear un post y lo procesa
     :param request: objeto HttpRequest
     :return: HttpResponse con la respuesta
     """
+
     # si la peticion es post, entonces tenemos que crear el post
     if request.method == 'POST':
         post = Post()
