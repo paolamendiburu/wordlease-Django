@@ -56,7 +56,9 @@ def create_post(request):
     """
     # si la peticion es post, entonces tenemos que crear el post
     if request.method == 'POST':
-        form = PostForm(request.POST, request.FILES)
+        post = Post()
+        post.owner = request.user
+        form = PostForm(request.POST, request.FILES, instance=post)
         if form.is_valid():
             # creamos el post
             post = form.save()

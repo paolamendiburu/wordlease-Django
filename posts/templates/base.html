@@ -9,10 +9,13 @@
 </head>
 <body>
     <nav>
+
         <a href="{% url 'home' %}">Home</a>
         |
         {% if user.is_authenticated %}
         Hola {{ user.first_name }},
+        <a href="{% url 'create-post' %}">New Post</a>
+        |
         <a href="{% url 'logout' %}">Logout</a>
         {% else %}
         <a href="{% url 'login' %}">Login</a>
