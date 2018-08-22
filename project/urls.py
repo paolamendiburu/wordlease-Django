@@ -19,6 +19,7 @@ from django.contrib import admin
 from django.urls import path
 
 from posts.views import HomeView, PostDeitalView, PostFormView, MyPostsView
+from users.api import UsersAPI, UserDetailAPI
 from users.views import LogoutView, LoginView
 
 urlpatterns = [
@@ -28,5 +29,10 @@ urlpatterns = [
     path('my-posts', MyPostsView.as_view(), name="my-posts"),
     path('login', LoginView.as_view(), name="login"),
     path('logout', LogoutView.as_view(), name="logout"),
-    path('new-post', PostFormView.as_view(), name="create-post")
+    path('new-post', PostFormView.as_view(), name="create-post"),
+
+    #api
+    path('api/v1/users/', UsersAPI.as_view(), name="users-api"),
+    path('api/v1/users/<int:pk>', UserDetailAPI.as_view(), name="userdetail-api")
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
