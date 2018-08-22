@@ -1,6 +1,7 @@
 
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
+from rest_framework import status
 
 from rest_framework.response import Response
 
@@ -23,6 +24,21 @@ class UsersAPI(APIView):
 
         return Response(serializer.data)
 
+    def post(self, request):
+        """
+        Crea un musuario y devuelve la informacion del Usuario Creado
+        :param request: Objeto de tipo HttpRequest
+        :return: objeto de tipo HttpReponse
+        """
+
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST
+                            )
+
 
 class UserDetailAPI(APIView):
 
@@ -38,4 +54,7 @@ class UserDetailAPI(APIView):
         serializer = UserSerializer(user)
 
         return Response(serializer.data)
+
+
+
 
