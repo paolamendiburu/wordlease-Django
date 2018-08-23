@@ -18,6 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 
+from posts.api import PostListAPI
 from posts.views import HomeView, PostDeitalView, PostFormView, MyPostsView
 from users.api import UsersAPI, UserDetailAPI
 from users.views import LogoutView, LoginView
@@ -33,6 +34,8 @@ urlpatterns = [
 
     #api
     path('api/v1/users/', UsersAPI.as_view(), name="users-api"),
-    path('api/v1/users/<int:pk>', UserDetailAPI.as_view(), name="userdetail-api")
+    path('api/v1/users/<int:pk>', UserDetailAPI.as_view(), name="userdetail-api"),
+
+    path('api/v1/posts', PostListAPI.as_view(), name="posts-api")
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
