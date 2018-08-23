@@ -2,92 +2,87 @@
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.generics import GenericAPIView
+
 
 from rest_framework.response import Response
 
-from rest_framework.views import APIView
 
+from rest_framework.viewsets import GenericViewSet
+
+from users.permissions import UserPermissions
 from users.serializers import UserSerializer, UserListSerializer
 
 
-class UsersAPI(GenericAPIView):
+class UserViewSet(GenericViewSet):
 
     queryset = User.objects.all()
+    permission_classes = [UserPermissions]
 
     def get_serializer_class(self):
         return UserSerializer if self.request.method == 'POST' else UserListSerializer
 
-    def get(self, request):
+    def list(self, request):
         """
-        Devuelve el listado de usuarios
-        :param request: Objeto de tipo HttpRequest
-        :return: objeto de tipo HttpReponse
+        Devuelve el listado de usuarios en formato JSON
+        :param request: objeto de tipo HttpRequest
+        :return: objeto Response con datos de los usuarios
         """
-
         queryset = self.queryset
         users = self.paginate_queryset(queryset)
         serializer_class = self.get_serializer_class()
         serializer = serializer_class(users, many=True)
-
         return self.get_paginated_response(serializer.data)
 
-    def post(self, request):
+    def create(self, request):
         """
-        Crea un musuario y devuelve la informacion del Usuario Creado
-        :param request: Objeto de tipo HttpRequest
-        :return: objeto de tipo HttpReponse
+        Crea un usuario y devuelve la información del usuario creado
+        :param request: objeto de tipo HttpRequest
+        :return:  objeto Response con datos del usuario creado o 400 con los errores cometidos
         """
-
-        serializer = UserSerializer(data=request.data)
+        serializer_class = self.get_serializer_class()
+        serializer = serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST
-                            )
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-class UserDetailAPI(APIView):
-
-    def get(self, request, pk):
+    def retrieve(self, request, pk):
         """
-        Devuelve el detalle de un usuario con pk <pk>
-        :param request: Objeto de tipo HttpRequest
+        Devuelve el detalle del usuario con pk <pk>
+        :param request: objeto de tipo HttpRequest
         :param pk: pk del usuario que queremos devolver
-        :return: objeto de tipo HttpReponse
+        :return: objeto Response con datos del usuario o 404
         """
-
         user = get_object_or_404(User, pk=pk)
+        self.check_object_permissions(request, user)
         serializer = UserSerializer(user)
-
         return Response(serializer.data)
 
-    def delete(self, request, pk):
+    def destroy(self, request, pk):
         """
-        Borra el usuario con ese pk
-        :param request: Objeto de tipo HttpRequest
-        :param pk:  pk del usuario que queremos eliminar
+        Borra el usuario con pk <pk> si existe.
+        :param request: objeto de tipo HttpRequest
+        :param pk: pk del usuario que queremos borrar
         :return: 204 o 404
         """
         user = get_object_or_404(User, pk=pk)
+        self.check_object_permissions(request, user)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    def put(self, request, pk):
+    def update(self, request, pk):
         """
-        Actualiza el usuario con ese pk
-        :param request: Objeto de tipo HttpRequest
-        :param pk:  pk del usuario que queremos actualizar
-        :return: 202 o 402
+        Actualiza el usuario con pk <pk> si existe.
+        :param request: objeto de tipo HttpRequest
+        :param pk: pk del usuario que queremos actualizar
+        :return: 202 si OK o 400 con errores
         """
         user = get_object_or_404(User, pk=pk)
+        self.check_object_permissions(request, user)
         serializer = UserSerializer(user, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST
-                            )
-
-
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
