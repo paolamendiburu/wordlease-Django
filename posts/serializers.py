@@ -15,3 +15,11 @@ class PostDetailSerializer(ModelSerializer):
         model = Post
 
         fields = '__all__'
+
+
+class NewPostSerializer(ModelSerializer):
+    class Meta:
+        model = Post
+
+        fields = '__all__'
+        exclude = ['owner']
