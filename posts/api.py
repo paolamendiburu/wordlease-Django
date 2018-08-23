@@ -1,3 +1,4 @@
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
@@ -9,6 +10,10 @@ from posts.serializers import PostListSerializer, PostDetailSerializer, NewPostS
 class PostViewSet(ModelViewSet):
     queryset = Post.objects.all()
     permission_classes = [PostPermissions]
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['title', 'full_text']
+    ordering_fields = ['title', 'publication_date']
+    ordering = ['-publication_date']
 
     def get_serializer_class(self):
         if self.action == 'create':
