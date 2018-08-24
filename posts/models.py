@@ -15,7 +15,14 @@ class Blog(models.Model):
         return '{0} | Owner: {1}'.format(self.name, self.owner)
 
 class Category(models.Model):
-    name = models.CharField()
+
+    name = models.CharField(max_length=200)
+
+    def __str__(self):
+        """
+        Define cómo se representa un Ad como una string
+        """
+        return '{0}'.format(self.name)
 
 class Post(models.Model):
 
