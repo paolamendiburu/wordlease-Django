@@ -3,7 +3,7 @@
 <h1>{{ title }}</h1>
 
 {% for post in object_list %}
-<a href="{% url 'post-detail' post.pk %}">
+<a href="{% url 'post-details' post.owner post.pk  %}">
     <div class="post">
         <img src="{{ post.image.url }}" alt="{{ post.title }}" title="{{ post.title }}">
         <p>{{ post.title}}</p>

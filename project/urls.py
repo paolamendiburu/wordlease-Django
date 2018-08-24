@@ -19,8 +19,8 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from posts.api import  MyPostsAPI, PostViewSet
-from posts.views import HomeView, PostFormView, MyPostsView, PostDetailView
+from posts.api import MyPostsAPI, PostViewSet
+from posts.views import HomeView, PostFormView, PostDetailView, BlogListView, BlogPostsView
 from users.api import UserViewSet
 from users.views import LogoutView, LoginView, signup
 
@@ -31,9 +31,11 @@ router.register('users', UserViewSet, base_name='users')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('blogs/<str:username>/<int:pk>', PostDetailView.as_view(), name="post-detail"),
+    path('blogs/', BlogListView.as_view(), name="blog-list"),
+    path('blogs/<str:username>/<int:pk>', PostDetailView.as_view(), name="post-details"),
+
     path('', HomeView.as_view(), name="home"),
-    path('my-posts', MyPostsView.as_view(), name="my-posts"),
+    path('blogs/<username>/', BlogPostsView.as_view(), name="my-posts"),
     path('login', LoginView.as_view(), name="login"),
     path('logout', LogoutView.as_view(), name="logout"),
     path('signup', signup, name="signup"),

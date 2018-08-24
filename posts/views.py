@@ -1,16 +1,19 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.db.models import Q
 from django.http import HttpResponse
 
 
 # Create your views here.
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import ListView
 
 from posts.forms import PostForm
-from posts.models import Post
+from posts.models import Post, Blog
+
 
 class HomeView(ListView):
 
@@ -27,18 +30,35 @@ class HomeView(ListView):
         context['title'] = "Wordplease"
         return context
 
-@method_decorator(login_required, name='dispatch')
-class MyPostsView(ListView):
+
+class BlogListView(ListView):
+
+    model = Blog
+    template_name = 'posts/bloglist.html'
+
+
+    def get_queryset(self):
+        result = super().get_queryset()
+        return result.order_by('-publication_date')
+
+
+
+
+
+
+
+class BlogPostsView(ListView):
+
     model = Post
     template_name = 'posts/list.html'
+
     def get_queryset(self):
         qs = super().get_queryset()
-        return qs.filter(owner=self.request.user)
+        username = self.kwargs.get('username')
+        user = get_object_or_404(User,  Q(username=username))
+        return qs.filter(owner=user.id).order_by('-publication_date')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = "My posts"
-        return context
+
 
 
 class PostDetailView(View):

@@ -5,7 +5,7 @@ from django.db import models
 class Blog(models.Model):
     owner = models.ForeignKey(User, related_name="blog", on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     publication_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -13,6 +13,9 @@ class Blog(models.Model):
         Define cómo se representa un Ad como una string
         """
         return '{0} | Owner: {1}'.format(self.name, self.owner)
+
+class Category(models.Model):
+    name = models.CharField()
 
 class Post(models.Model):
 
@@ -23,6 +26,7 @@ class Post(models.Model):
     full_text = models.TextField()
     image = models.FileField(null=True, blank=True)
     publication_date = models.DateTimeField(auto_now_add=True)
+    categories = models.ManyToManyField(Category, related_name="category")
 
     def __str__(self):
         """
