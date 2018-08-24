@@ -1,12 +1,14 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib.auth import login as django_login, logout as django_logout
 
 # Create your views here.
 from django.views import View
 
-from users.forms import LoginForm
+from users.forms import LoginForm, SignupForm
+
 
 class LoginView(View):
     def get(self, request):
@@ -62,3 +64,23 @@ class LogoutView(View):
         """
         django_logout(request)
         return redirect('login')
+
+
+
+def signup(request):
+
+    if request.method == 'POST':
+
+        form = SignupForm(request.POST)
+
+        if form.is_valid():
+
+            form.save()
+            SignupForm()
+            messages.success(request, 'The user has been createed succesfully')
+    else:
+        form = SignupForm()
+
+    form = SignupForm()
+    context = {'form': form}
+    return render(request, 'users/signup.html', context)

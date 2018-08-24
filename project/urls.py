@@ -20,10 +20,9 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from posts.api import  MyPostsAPI, PostViewSet
-from posts.views import HomeView, PostDeitalView, PostFormView, MyPostsView
+from posts.views import HomeView, PostFormView, MyPostsView, PostDetailView
 from users.api import UserViewSet
-from users.views import LogoutView, LoginView
-
+from users.views import LogoutView, LoginView, signup
 
 router = DefaultRouter()
 router.register('posts', PostViewSet)
@@ -32,11 +31,12 @@ router.register('users', UserViewSet, base_name='users')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('post/<int:pk>', PostDeitalView.as_view(), name="post-detail"),
+    path('blogs/<str:username>/<int:pk>', PostDetailView.as_view(), name="post-detail"),
     path('', HomeView.as_view(), name="home"),
     path('my-posts', MyPostsView.as_view(), name="my-posts"),
     path('login', LoginView.as_view(), name="login"),
     path('logout', LogoutView.as_view(), name="logout"),
+    path('signup', signup, name="signup"),
     path('new-post', PostFormView.as_view(), name="create-post"),
 
     #api

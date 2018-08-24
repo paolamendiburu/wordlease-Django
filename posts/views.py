@@ -41,8 +41,8 @@ class MyPostsView(ListView):
         return context
 
 
-class PostDeitalView(View):
-    def get(self, request, pk):
+class PostDetailView(View):
+    def get(self, request, username, pk):
         """
          Muestra el detalle de un posts
          :param request objeto:HttpRequest
@@ -51,12 +51,12 @@ class PostDeitalView(View):
          """
         #recuperar de la base de datos el post que me piden y ver que existe y si no existe devolver un 404
         try:
-            post = Post.objects.select_related().get(pk=pk)
+            post = Post.objects.select_related().get(owner__username=username, pk=pk)
         except Post.DoesNotExit:
-            return HttpResponse('No existe el post que buscas')
+            return HttpResponse('The post doesn\'t exists')
 
         #si existe el anuncio creamos el contesto
-        context = {'post':post}
+        context = {'post': post}
 
         # devover la respuesta utilizando una plantilla
         return render(request, 'posts/detail.html', context)
@@ -79,18 +79,18 @@ class PostFormView(View):
 
     def post(self, request):
         """
-        Procesa el formulario para crear un post
+        Procesa el formulario para crear un usuario
         :param request: objeto HttpRequest
         :return: HttpResponse con la respuesta
         """
 
         post = Post()
         post.owner = request.user
-        form = PostForm(request.POST, request.FILES, instance=post)
+        form = PostForm(request.POST, instance=post)
         if form.is_valid():
             # creamos el post
             post = form.save()
             # limpiar el formulario
             form = PostForm()
             # Devolvemos un mensaje de OK
-            messages.success(request, 'Anuncio creado correctamente')
+            messages.success(request, 'Post creado correctamente')
