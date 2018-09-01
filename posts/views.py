@@ -106,6 +106,7 @@ class PostFormView(View):
 
         post = Post()
         post.owner = request.user
+
         form = PostForm(request.POST, instance=post)
         if form.is_valid():
             # creamos el post
@@ -114,3 +115,7 @@ class PostFormView(View):
             form = PostForm()
             # Devolvemos un mensaje de OK
             messages.success(request, 'Post creado correctamente')
+            context = {'form': form}
+            return render(request, 'posts/form.html', context)
+
+

@@ -1,8 +1,10 @@
+from datetime import datetime
 from django.contrib.auth.models import User
 from django.db import models
 
 # Create your models here.
 class Blog(models.Model):
+
     owner = models.ForeignKey(User, related_name="blog", on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
@@ -31,8 +33,8 @@ class Post(models.Model):
     title = models.CharField(max_length=200)
     introduction = models.TextField()
     full_text = models.TextField()
-    image = models.FileField(null=True, blank=True)
-    publication_date = models.DateTimeField(auto_now_add=True)
+    image = models.URLField(null=True, blank=True)
+    publication_date = models.DateTimeField(default=datetime.now)
     categories = models.ManyToManyField(Category, related_name="category")
 
     def __str__(self):

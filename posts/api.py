@@ -3,9 +3,18 @@ from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIV
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
-from posts.models import Post
+from posts.models import Post, Blog
 from posts.permissions import PostPermissions
-from posts.serializers import PostListSerializer, PostDetailSerializer, NewPostSerializer
+from posts.serializers import PostListSerializer, PostDetailSerializer, NewPostSerializer, BlogListSerializer
+
+
+class BlogViewSet(ModelViewSet):
+    queryset = Blog.objects.all()
+    serializer_class = BlogListSerializer
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['owner__username']
+    ordering_fields = ['name']
+
 
 class PostViewSet(ModelViewSet):
     queryset = Post.objects.all()
