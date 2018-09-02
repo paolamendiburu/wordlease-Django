@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
@@ -17,7 +19,7 @@ class BlogViewSet(ModelViewSet):
 
 
 class PostViewSet(ModelViewSet):
-    queryset = Post.objects.all()
+    queryset = Post.objects.filter(publication_date__lte=datetime.now())
     permission_classes = [PostPermissions]
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['title', 'full_text']
@@ -31,10 +33,6 @@ class PostViewSet(ModelViewSet):
             return PostListSerializer
         else:
             return PostDetailSerializer
-
-    def get_queryset(self):
-        username = self.request.user.username
-        return Post.objects.filter(blog__owner=username)
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)

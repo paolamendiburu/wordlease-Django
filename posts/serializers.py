@@ -13,7 +13,6 @@ class BlogListSerializer(ModelSerializer):
 class PostListSerializer(ModelSerializer):
     class Meta:
         model = Post
-
         fields = ['id', 'title', 'image', 'introduction', 'publication_date']
 
 
