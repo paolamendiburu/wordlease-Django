@@ -4,10 +4,10 @@
 
 {% block body %}
     <h1>{{ post.title }}</h1>
-    <% if post.image %>
-        <img src="{{ post.image.url}}" alt="{{ post.title }}" title="{{ post.title }}">
-    <% endif %>
-    <p>User: {{ post.owner.first_name }} {{ post.owner.last_name }}</p>
+    {% if post.image %}
+        <img class="img-fluid rounded" src="{{ post.image}}" alt="{{ post.title }}" title="{{ post.title }}">
+    {% endif %}
+    <p>Owner: {{ post.owner.first_name }} {{ post.owner.last_name }}</p>
     <div>{{ post.full_text }}<</div>
 
 {% endblock %}

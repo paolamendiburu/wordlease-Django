@@ -32,6 +32,10 @@ class PostViewSet(ModelViewSet):
         else:
             return PostDetailSerializer
 
+    def get_queryset(self):
+        username = self.request.user.username
+        return Post.objects.filter(blog__owner=username)
+
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
